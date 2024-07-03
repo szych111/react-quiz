@@ -1,23 +1,40 @@
-export default function Answers({ activeQuestionIndex, answers, selectedAnswer, answerState }) {
-  return (<ul key={activeQuestionIndex * 2} id="answers">
-  {shuffledAnswers.current.map((a) => {
-    const isSelected = userAnswers[userAnswers.length - 1] === a;
-    let cssClass = "";
+import { useRef } from "react";
 
-    if (answerState !== "" && isSelected) {
-      cssClass = answerState;
-    }
+export default function Answers({
+  answers,
+  selectedAnswer,
+  answerState,
+  onSelectAnswer,
+}) {
+  const shuffledAnswers = useRef();
 
-    return (
-      <li className="answer" key={a}>
-        <button
-          onClick={() => handleSelectAnswer(a)}
-          className={cssClass}
-        >
-          {a}
-        </button>
-      </li>
-    );
-  })}
-</ul>)
+  if (!shuffledAnswers.current) {
+    shuffledAnswers.current = [...answers];
+    shuffledAnswers.current.sort(() => Math.random() - 0.5);
+  }
+
+  return (
+    <ul id="answers">
+      {shuffledAnswers.current.map((a) => {
+        const isSelected = selectedAnswer === a;
+        let cssClass = "";
+
+        if (answerState !== "" && isSelected) {
+          cssClass = answerState;
+        }
+
+        return (
+          <li className="answer" key={a}>
+            <button
+              onClick={() => onSelectAnswer(a)}
+              className={cssClass}
+              disabled={answerState !== ""}
+            >
+              {a}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
 }
