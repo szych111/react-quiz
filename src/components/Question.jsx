@@ -9,6 +9,16 @@ export default function Question({ index, onSelectAnswer, onTimeout }) {
     isCorrect: null,
   });
 
+  let timer = 10000;
+
+  if (answer.selectedAnswer) {
+    timer = 1000;
+  }
+
+  if (answer.isCorrect !== null) {
+    timer = 2000;
+  }
+
   function handleSelectAnswer(answer) {
     setAnswer({
       selectedAnswer: answer,
@@ -37,7 +47,12 @@ export default function Question({ index, onSelectAnswer, onTimeout }) {
 
   return (
     <div id="question">
-      <QuestionTimer timeout={10000} onTimeout={onTimeout} />
+      <QuestionTimer
+        key={timer}
+        timeout={timer}
+        onTimeout={answer.selectedAnswer === "" ? onTimeout : null}
+        mode={answerState}
+      />
       <h4>{QUESTIONS[index].text}</h4>
       <Answers
         onSelectAnswer={handleSelectAnswer}
